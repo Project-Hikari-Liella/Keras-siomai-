@@ -33,7 +33,9 @@ using ::android::hardware::Void;
 using ::android::hardware::sensors::V2_0::implementation::ScopedWakelock;
 
 SensorsSubHal::SensorsSubHal() : mCallback(nullptr), mNextHandle(1) {
-    AddSensor<UdfpsSensor>();
+    if (property_get_bool("ro.vendor.sensors.xiaomi.double_tap", false)) {
+        AddSensor<DoubleTapSensor>();
+    }
 }
 
 Return<void> SensorsSubHal::getSensorsList_2_1(ISensors::getSensorsList_2_1_cb _hidl_cb) {
