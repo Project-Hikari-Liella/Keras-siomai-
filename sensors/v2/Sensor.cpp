@@ -309,8 +309,8 @@ void UdfpsSensor::run() {
                 continue;
             }
 
-            if (mPolls[1].revents == mPolls[1].events && readFpState(mPollFd, mScreenX, mScreenY)) {
-                mIsEnabled = false;
+            if (mPolls[1].revents == mPolls[1].events && readFd(mPollFd)) {
+                activate(false, false, false);
                 mCallback->postEvents(readEvents(), isWakeUpSensor());
             } else if (mPolls[0].revents == mPolls[0].events) {
                 char buf;
@@ -337,6 +337,10 @@ void UdfpsSensor::interruptPoll() {
 
     char c = '1';
     write(mWaitPipeFd[1], &c, sizeof(c));
+}
+
+bool SysfsPollingOneShotSensor::readFd(const int fd) {
+    return readBool(fd, true /* seek */);
 }
 
 }  // namespace implementation
